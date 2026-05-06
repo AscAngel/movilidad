@@ -233,6 +233,17 @@ body {
   box-shadow: 0 0 0 3px var(--primary-muted);
 }
 
+.glass-select:disabled {
+  background-color: var(--surface-muted);
+  color: var(--foreground-subtle);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.glass-select:disabled:hover {
+  border-color: var(--border);
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;

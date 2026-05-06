@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { MapPin, ArrowRight, Clock, Footprints } from 'lucide-react'
+import { MapPin, ArrowRight, Clock } from 'lucide-react'
 import { GlassCard, GlassCardTitle, GlassCardContent } from '../ui/GlassCard'
 import { LineBadge } from '../ui/Badge'
 
@@ -69,7 +69,7 @@ function TimelineStep({ step, isFirst, isLast }) {
                 <LineBadge line={step.line} />
                 {step.direction && (
                   <span className="text-xs text-foreground-muted">
-                    Dirección: {step.direction}
+                    {step.direction}
                   </span>
                 )}
               </div>
@@ -90,21 +90,11 @@ function TimelineStep({ step, isFirst, isLast }) {
         </div>
         
         {/* Transfer indicator */}
-        {step.type === 'transfer' && (
+        {step.type === 'transfer' && step.instruction && (
           <div className="mt-3 p-3 rounded-lg bg-warning-muted border border-warning/20">
             <div className="flex items-center gap-2 text-sm text-warning">
               <ArrowRight className="w-4 h-4" />
-              <span>Transbordo a {step.transferTo}</span>
-            </div>
-          </div>
-        )}
-        
-        {/* Walk segment */}
-        {step.type === 'walk' && (
-          <div className="mt-3 p-3 rounded-lg bg-surface-glass border border-border">
-            <div className="flex items-center gap-2 text-sm text-foreground-muted">
-              <Footprints className="w-4 h-4" />
-              <span>Caminar {step.walkDistance}</span>
+              <span>{step.instruction}</span>
             </div>
           </div>
         )}

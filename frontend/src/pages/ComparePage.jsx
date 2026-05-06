@@ -8,74 +8,6 @@ import { GlassCard, GlassCardTitle, GlassCardContent } from '../components/ui/Gl
 import { Select } from '../components/ui/Select'
 import { getStationById } from '../data/stations'
 
-// Mock data for multiple routes
-const mockRoutes = [
-  {
-    id: 'route-1',
-    name: 'Ruta Óptima (L1 + L3)',
-    lines: ['L1', 'L3'],
-    metrics: {
-      totalTime: 45,
-      transfers: 1,
-      cost: 9.50,
-      stations: 12,
-      walkingTime: 5,
-      isFastest: true,
-    },
-    tags: [
-      { label: 'Más rápida', variant: 'primary' },
-      { label: 'Recomendada', variant: 'success' },
-    ],
-  },
-  {
-    id: 'route-2',
-    name: 'Ruta Directa (L7)',
-    lines: ['L7'],
-    metrics: {
-      totalTime: 52,
-      transfers: 0,
-      cost: 9.50,
-      stations: 18,
-      walkingTime: 3,
-      fewestTransfers: true,
-    },
-    tags: [
-      { label: 'Sin transbordos', variant: 'warning' },
-    ],
-  },
-  {
-    id: 'route-3',
-    name: 'Ruta Alternativa (L1 + L2 + L3)',
-    lines: ['L1', 'L2', 'L3'],
-    metrics: {
-      totalTime: 48,
-      transfers: 2,
-      cost: 14.25,
-      stations: 15,
-      walkingTime: 8,
-    },
-    tags: [
-      { label: 'Más opciones', variant: 'accent' },
-    ],
-  },
-  {
-    id: 'route-4',
-    name: 'Ruta Económica (L6)',
-    lines: ['L6'],
-    metrics: {
-      totalTime: 55,
-      transfers: 0,
-      cost: 7.00,
-      stations: 20,
-      walkingTime: 10,
-      cheapest: true,
-    },
-    tags: [
-      { label: 'Más económica', variant: 'primary' },
-    ],
-  },
-]
-
 export function ComparePage() {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
@@ -86,6 +18,8 @@ export function ComparePage() {
 
   const origin = searchParams.get('origin')
   const destination = searchParams.get('destination')
+  const time = searchParams.get('time')
+  const preference = searchParams.get('preference') || 'balanced'
 
   const originStation = useMemo(() => getStationById(origin), [origin])
   const destStation = useMemo(() => getStationById(destination), [destination])
@@ -100,13 +34,56 @@ export function ComparePage() {
   useEffect(() => {
     const fetchRoutes = async () => {
       setLoading(true)
-      await new Promise(resolve => setTimeout(resolve, 600))
-      setRoutes(mockRoutes)
-      setSelectedRoutes([mockRoutes[0].id]) // Pre-select recommended
-      setLoading(false)
+      try {
+        // Try to get cached results from previous search
+        const cached = sessionStorage.getItem('routeSearchResults')
+        if (cached) {
+          const searchResults = JSON.parse(cached)
+          if (searchResults.routes) {
+            // Transform API response to match component expectations
+            const transformedRoutes = searchResults.routes.map((route, index) => {
+              const tags = []
+              if (index === 0) {
+                tags.push({ label: 'Recomendada', variant: 'success' })
+              }
+              if (route.metrics.transfers === 0) {
+                tags.push({ label: 'Sin transbordos', variant: 'warning' })
+              }
+              if (route.metrics.total_time === Math.min(...searchResults.routes.map(r => r.metrics.total_time))) {
+                tags.push({ label: 'Más rápida', variant: 'primary' })
+              }
+              if (route.metrics.cost === Math.min(...searchResults.routes.map(r => r.metrics.cost))) {
+                tags.push({ label: 'Más económica', variant: 'accent' })
+              }
+
+              return {
+                id: route.id,
+                name: `Ruta ${index + 1} ${route.lines.join(' + ')}`,
+                lines: route.lines,
+                metrics: {
+                  totalTime: route.metrics.total_time,
+                  transfers: route.metrics.transfers,
+                  cost: route.metrics.cost,
+                  stations: route.metrics.stations_count,
+                  walkingTime: route.metrics.walking_time,
+                },
+                tags: tags.length > 0 ? tags : undefined,
+              }
+            })
+
+            setRoutes(transformedRoutes)
+            setSelectedRoutes([transformedRoutes[0]?.id])
+          }
+        }
+      } catch (err) {
+        console.error('Error loading routes:', err)
+      } finally {
+        setLoading(false)
+      }
     }
+
     fetchRoutes()
-  }, [origin, destination])
+  }, [])
 
   const sortedRoutes = useMemo(() => {
     const sorted = [...routes]
@@ -144,7 +121,14 @@ export function ComparePage() {
   }
 
   const handleViewDetails = (routeId) => {
-    navigate(`/resultados?origin=${origin}&destination=${destination}&route=${routeId}`)
+    const params = new URLSearchParams({
+      origin,
+      destination,
+      time: time || 'now',
+      preference,
+      route: routeId,
+    })
+    navigate(`/resultados?${params.toString()}`)
   }
 
   if (loading) {
@@ -153,6 +137,26 @@ export function ComparePage() {
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-foreground-muted">Cargando rutas...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (routes.length === 0) {
+    return (
+      <div className="space-y-6">
+        <button 
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 text-foreground-muted hover:text-foreground transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Volver</span>
+        </button>
+        <div className="text-center py-12">
+          <p className="text-foreground-muted">No hay rutas para comparar</p>
+          <Button onClick={() => navigate('/')} className="mt-4">
+            Nueva búsqueda
+          </Button>
         </div>
       </div>
     )
@@ -197,7 +201,7 @@ export function ComparePage() {
 
       {/* Selection Info */}
       <GlassCard padding="p-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-wrap gap-4">
           <p className="text-sm text-foreground-muted">
             Selecciona hasta 3 rutas para comparar. 
             <span className="text-primary font-medium ml-1">

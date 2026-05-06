@@ -52,7 +52,7 @@ export function AboutPage() {
       <section>
         <GlassCard elevated>
           <GlassCardTitle icon={Target}>
-            Objetivo General
+            Objetivo de InferRoute
           </GlassCardTitle>
           <GlassCardContent>
             <p className="text-foreground leading-relaxed">
@@ -67,7 +67,7 @@ export function AboutPage() {
       </section>
 
       {/* Specific Objectives */}
-      <section>
+      {/* <section>
         <h2 className="text-xl font-semibold text-foreground mb-6">
           Objetivos Específicos
         </h2>
@@ -97,7 +97,7 @@ export function AboutPage() {
             </p>
           </GlassCard>
         </div>
-      </section>
+      </section> */}
 
       {/* Features */}
       <section>
@@ -119,28 +119,7 @@ export function AboutPage() {
         </div>
       </section>
 
-      {/* Tech Stack */}
-      <section>
-        <GlassCard>
-          <GlassCardTitle icon={Code}>
-            Stack Tecnológico
-          </GlassCardTitle>
-          <GlassCardContent>
-            <div className="flex flex-wrap gap-3">
-              {techStack.map((tech, index) => (
-                <div 
-                  key={index}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-glass border border-border"
-                >
-                  <span className="font-medium text-foreground">{tech.name}</span>
-                  <Badge variant="primary">{tech.type}</Badge>
-                </div>
-              ))}
-            </div>
-          </GlassCardContent>
-        </GlassCard>
-      </section>
-
+      
       {/* Lines Info */}
       <section>
         <h2 className="text-xl font-semibold text-foreground mb-6">

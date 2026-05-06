@@ -267,6 +267,153 @@ export const stations = {
 }
 
 // Get station options for select dropdowns
+// Line order in the transit system
+const lineOrder = ['L1', 'L2', 'L3', 'L4', 'L6', 'L7']
+
+// Stations grouped by line in the order they appear in the transit map
+const stationsByLine = {
+  L1: [
+    'Periferico_Norte',
+    'Dermatologico',
+    'Atemajac',
+    'Division_del_Norte',
+    'Avila_Camacho',
+    'Mezquitan',
+    'Refugio',
+    'Juarez',
+    'Mexicaltzingo',
+    'Washington',
+    'Santa_Filomena',
+    'Unidad_Deportiva',
+    'Urdaneta',
+    '18_de_Marzo',
+    'Isla_Raza',
+    'Patria_Sur',
+    'Espana',
+    'Santuario_Martires_de_Cristo_Rey',
+    'Periferico_Sur',
+  ],
+  L2: [
+    'Juarez',
+    'Centro',
+    'San_Juan_de_Dios',
+    'Belisario_Dominguez',
+    'Oblatos',
+    'Cristobal_de_Onate',
+    'San_Andres',
+    'San_Jacinto',
+    'La_Aurora',
+    'Tetlan',
+  ],
+  L3: [
+    'Arcos_de_Zapopan',
+    'Periferico_Belenes',
+    'Mercado_del_Mar',
+    'Zapopan_Centro',
+    'Plaza_Patria',
+    'Circunvalacion_Country',
+    'Avila_Camacho',
+    'La_Normal',
+    'Santuario',
+    'Centro',
+    'Independencia',
+    'Plaza_de_la_Bandera',
+    'CUCEI',
+    'Revolucion',
+    'Rio_Nilo',
+    'Tlaquepaque_Centro',
+    'Lazaro_Cardenas_L3',
+    'Central_de_Autobuses',
+  ],
+  L4: [
+    'Tlajomulco_Centro',
+    'CUTLAJO',
+    'Lomas_del_Sur',
+    'El_Cuervo',
+    'Concepcion_del_Valle',
+    'Real_del_Valle',
+    'Jalisco_200_Anos',
+    'Las_Juntas',
+  ],
+  L6: [
+    'Mirador',
+    'Huentitan',
+    'Zoologico',
+    'Independencia_Norte',
+    'San_Patricio',
+    'Igualdad',
+    'Monumental',
+    'Monte_Olivete',
+    'Circunvalacion',
+    'Ciencias_de_la_Salud',
+    'Juan_Alvarez',
+    'Alameda',
+    'San_Juan_de_Dios',
+    'Independencia',
+    'La_Paz',
+    'Ninos_Heroes',
+    'Agua_Azul',
+    'Cipres',
+    'Heroes_de_Nacozari',
+    'Lazaro_Cardenas_L6',
+    'El_Dean',
+    'Zona_Industrial',
+    'Lopez_de_Legaspi',
+    'Clemente_Orozco',
+    'Artes_Plasticas',
+    'Esculturas',
+    'Las_Juntas',
+  ],
+  L7: [
+    'Carretera_a_Chapala',
+    'Las_Pintas',
+    'Artesanos',
+    'Jalisco_200_Anos',
+    'Adolf_Horn',
+    'Toluquilla',
+    '8_de_Julio',
+    'San_Sebastianito',
+    'Periferico_Sur',
+    'Terminal_Sur_de_Autobuses',
+    'Iteso',
+    'Lopez_Mateos',
+    'Agricola',
+    'El_Briseno',
+    'Mariano_Otero',
+    'Miramar',
+    'Felipe_Ruvalcaba',
+    'El_Colli',
+    'Chapalita_Inn',
+    'Parque_Metropolitano',
+    'Ciudad_Granja',
+    'Ciudad_Judicial',
+    'Estadio_Chivas',
+    'Vallarta',
+    'San_Juan_de_Ocotan',
+    '5_de_Mayo',
+    'Acueducto',
+    'Santa_Margarita',
+    'La_Tuzania',
+    'Periferico_Belenes',
+    'San_Isidro',
+    'Centro_Cultural_Universitario',
+    'Constitucion',
+    'Tabachines',
+    'La_Cantera',
+    'Periferico_Norte',
+    'El_Batan',
+    'La_Experiencia',
+    'Rancho_Nuevo',
+    'Lomas_del_Paraiso',
+    'Independencia_Norte',
+    'Zoologico_Guadalajara',
+    'Barranca_de_Huentitan',
+    'Comisaria_de_Guadalajara',
+    'Colonia_Jalisco',
+    'Los_Conejos',
+  ],
+}
+
 export function getStationOptions() {
   return Object.values(stations)
     .sort((a, b) => a.name.localeCompare(b.name, 'es'))
@@ -274,6 +421,27 @@ export function getStationOptions() {
       value: station.id,
       label: `${station.name} (${station.lines.join(', ')})`,
     }))
+}
+
+// Get available lines
+export function getAvailableLines() {
+  return lineOrder.map(line => ({
+    value: line,
+    label: line,
+  }))
+}
+
+// Get stations for a specific line (in order as they appear)
+export function getStationsForLine(line) {
+  if (!stationsByLine[line]) return []
+  
+  return stationsByLine[line].map(stationId => {
+    const station = stations[stationId]
+    return {
+      value: stationId,
+      label: station?.name || stationId,
+    }
+  })
 }
 
 // Get station by ID
