@@ -144,7 +144,7 @@ export function ComparePage() {
   }
 
   const handleViewDetails = (routeId) => {
-    navigate(`/results?origin=${origin}&destination=${destination}&route=${routeId}`)
+    navigate(`/resultados?origin=${origin}&destination=${destination}&route=${routeId}`)
   }
 
   if (loading) {

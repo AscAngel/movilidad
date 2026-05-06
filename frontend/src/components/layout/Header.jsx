@@ -7,8 +7,8 @@ export function Header() {
 
   const navItems = [
     { path: '/', label: 'Buscar', icon: Search },
-    { path: '/compare', label: 'Comparar', icon: GitCompare },
-    { path: '/about', label: 'Acerca de', icon: Info },
+    { path: '/comparar', label: 'Comparar', icon: GitCompare },
+    { path: '/acerca-de', label: 'Acerca de', icon: Info },
   ]
 
   return (

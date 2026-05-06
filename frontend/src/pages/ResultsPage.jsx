@@ -168,7 +168,7 @@ export function ResultsPage() {
 
       {/* Actions */}
       <div className="flex flex-wrap gap-3">
-        <Link to={`/compare?route=${routeData.id}&origin=${origin}&destination=${destination}`}>
+        <Link to={`/comparar?route=${routeData.id}&origin=${origin}&destination=${destination}`}>
           <Button variant="secondary" icon={GitCompare}>
             Comparar Rutas
           </Button>
