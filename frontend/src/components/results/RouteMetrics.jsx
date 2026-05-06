@@ -73,13 +73,13 @@ function MetricItem({ icon: Icon, label, value, color = 'primary' }) {
   }
 
   return (
-    <div className="flex items-center gap-3 p-4 rounded-lg bg-surface-glass border border-border">
-      <div className={`p-2 rounded-lg ${colorClasses[color]}`}>
+    <div className="flex items-center gap-4 p-5 rounded-xl bg-surface-glass border border-border min-w-0">
+      <div className={`p-3 rounded-lg shrink-0 ${colorClasses[color]}`}>
         <Icon className="w-5 h-5" />
       </div>
-      <div>
-        <p className="text-xs text-foreground-muted">{label}</p>
-        <p className="text-lg font-bold text-foreground">{value}</p>
+      <div className="min-w-0 flex-1">
+        <p className="text-xs text-foreground-muted truncate">{label}</p>
+        <p className="text-xl font-bold text-foreground truncate">{value}</p>
       </div>
     </div>
   )

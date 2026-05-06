@@ -21,8 +21,8 @@ export function Header() {
               <Train className="w-6 h-6 text-primary" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-foreground">MiRuta GDL</h1>
-              <p className="text-xs text-foreground-muted">Sistema de Rutas ZMG</p>
+              <h1 className="text-lg font-bold text-foreground">InferRoute</h1>
+              <p className="text-xs text-foreground-muted">Sistema Experto de Rutas</p>
             </div>
           </Link>
 

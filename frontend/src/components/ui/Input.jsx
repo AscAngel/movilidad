@@ -25,7 +25,7 @@ export const Input = forwardRef(({
           ref={ref}
           className={clsx(
             'glass-input w-full',
-            Icon && 'pl-12',
+            Icon && 'has-icon',
             error && 'border-error focus:border-error focus:shadow-[0_0_0_3px_rgba(239,68,68,0.2)]',
             className
           )}
