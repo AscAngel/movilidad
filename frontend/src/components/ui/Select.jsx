@@ -1,0 +1,52 @@
+import { clsx } from 'clsx'
+import { forwardRef } from 'react'
+import { ChevronDown } from 'lucide-react'
+
+export const Select = forwardRef(({ 
+  className = '', 
+  label,
+  error,
+  icon: Icon,
+  options = [],
+  placeholder = 'Seleccionar...',
+  ...props 
+}, ref) => {
+  return (
+    <div className="w-full">
+      {label && (
+        <label className="block text-sm font-medium text-foreground-muted mb-2">
+          {label}
+        </label>
+      )}
+      <div className="relative">
+        {Icon && (
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground-subtle pointer-events-none z-10">
+            <Icon className="w-5 h-5" />
+          </div>
+        )}
+        <select
+          ref={ref}
+          className={clsx(
+            'glass-select w-full',
+            Icon && 'pl-12',
+            error && 'border-error focus:border-error focus:shadow-[0_0_0_3px_rgba(239,68,68,0.2)]',
+            className
+          )}
+          {...props}
+        >
+          <option value="" disabled>{placeholder}</option>
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      </div>
+      {error && (
+        <p className="mt-1 text-sm text-error">{error}</p>
+      )}
+    </div>
+  )
+})
+
+Select.displayName = 'Select'
