@@ -11,9 +11,9 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/results" element={<ResultsPage />} />
-          <Route path="/compare" element={<ComparePage />} />
-          <Route path="/about" element={<AboutPage />} />
+          <Route path="/resultados" element={<ResultsPage />} />
+          <Route path="/comparar" element={<ComparePage />} />
+          <Route path="/acerca-de" element={<AboutPage />} />
         </Routes>
       </Layout>
     </Router>

@@ -73,7 +73,7 @@ export function SearchForm({ onSearch }) {
         await onSearch(formData)
       }
       
-      navigate(`/results?${params.toString()}`)
+      navigate(`/resultados?${params.toString()}`)
     } catch (error) {
       console.error('Search error:', error)
     } finally {
