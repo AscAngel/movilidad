@@ -7,6 +7,7 @@ import { Button } from '../components/ui/Button'
 import { GlassCard, GlassCardTitle, GlassCardContent } from '../components/ui/GlassCard'
 import { Select } from '../components/ui/Select'
 import { getStationById } from '../data/stations'
+import { searchRoutes } from '../services/api'
 
 export function ComparePage() {
   const [searchParams] = useSearchParams()
@@ -32,49 +33,71 @@ export function ComparePage() {
   ]
 
   useEffect(() => {
+    const buildRoutes = (searchResults) => {
+      if (!searchResults?.routes) {
+        return []
+      }
+
+      return searchResults.routes.map((route, index) => {
+        const tags = []
+        if (index === 0) {
+          tags.push({ label: 'Recomendada', variant: 'success' })
+        }
+        if (route.metrics.transfers === 0) {
+          tags.push({ label: 'Sin transbordos', variant: 'warning' })
+        }
+        if (route.metrics.total_time === Math.min(...searchResults.routes.map(r => r.metrics.total_time))) {
+          tags.push({ label: 'Más rápida', variant: 'primary' })
+        }
+        if (route.metrics.cost === Math.min(...searchResults.routes.map(r => r.metrics.cost))) {
+          tags.push({ label: 'Más económica', variant: 'accent' })
+        }
+
+        return {
+          id: route.id,
+          name: `Ruta ${index + 1} ${route.lines.join(' + ')}`,
+          lines: route.lines,
+          metrics: {
+            totalTime: route.metrics.total_time,
+            transfers: route.metrics.transfers,
+            cost: route.metrics.cost,
+            stations: route.metrics.stations_count,
+            walkingTime: route.metrics.walking_time,
+          },
+          tags: tags.length > 0 ? tags : undefined,
+        }
+      })
+    }
+
     const fetchRoutes = async () => {
       setLoading(true)
       try {
-        // Try to get cached results from previous search
         const cached = sessionStorage.getItem('routeSearchResults')
         if (cached) {
           const searchResults = JSON.parse(cached)
-          if (searchResults.routes) {
-            // Transform API response to match component expectations
-            const transformedRoutes = searchResults.routes.map((route, index) => {
-              const tags = []
-              if (index === 0) {
-                tags.push({ label: 'Recomendada', variant: 'success' })
-              }
-              if (route.metrics.transfers === 0) {
-                tags.push({ label: 'Sin transbordos', variant: 'warning' })
-              }
-              if (route.metrics.total_time === Math.min(...searchResults.routes.map(r => r.metrics.total_time))) {
-                tags.push({ label: 'Más rápida', variant: 'primary' })
-              }
-              if (route.metrics.cost === Math.min(...searchResults.routes.map(r => r.metrics.cost))) {
-                tags.push({ label: 'Más económica', variant: 'accent' })
-              }
-
-              return {
-                id: route.id,
-                name: `Ruta ${index + 1} ${route.lines.join(' + ')}`,
-                lines: route.lines,
-                metrics: {
-                  totalTime: route.metrics.total_time,
-                  transfers: route.metrics.transfers,
-                  cost: route.metrics.cost,
-                  stations: route.metrics.stations_count,
-                  walkingTime: route.metrics.walking_time,
-                },
-                tags: tags.length > 0 ? tags : undefined,
-              }
-            })
-
-            setRoutes(transformedRoutes)
-            setSelectedRoutes([transformedRoutes[0]?.id])
-          }
+          const transformedRoutes = buildRoutes(searchResults)
+          setRoutes(transformedRoutes)
+          setSelectedRoutes([transformedRoutes[0]?.id])
+          return
         }
+
+        if (!origin || !destination) {
+          setRoutes([])
+          return
+        }
+
+        const searchResults = await searchRoutes({
+          origin: origin,
+          destination: destination,
+          departureTime: time && time !== 'now' ? time : null,
+          preference: preference,
+        })
+
+        sessionStorage.setItem('routeSearchResults', JSON.stringify(searchResults))
+
+        const transformedRoutes = buildRoutes(searchResults)
+        setRoutes(transformedRoutes)
+        setSelectedRoutes([transformedRoutes[0]?.id])
       } catch (err) {
         console.error('Error loading routes:', err)
       } finally {
@@ -83,7 +106,7 @@ export function ComparePage() {
     }
 
     fetchRoutes()
-  }, [])
+  }, [origin, destination, time, preference])
 
   const sortedRoutes = useMemo(() => {
     const sorted = [...routes]

@@ -39,7 +39,6 @@ export function ResultsPage() {
         if (cached) {
           console.log('Usando resultados en caché')
           searchResults = JSON.parse(cached)
-          sessionStorage.removeItem('routeSearchResults')
         } else {
           // If no cache, try to fetch from API directly
           console.log('No hay caché, buscando desde API...')
@@ -206,7 +205,7 @@ export function ResultsPage() {
       </div>
 
       {/* Actions */}
-      {/* <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap gap-3">
         {allRoutes.length > 1 && (
           <Link to={`/comparar?origin=${origin}&destination=${destination}&time=${time}&preference=${preference}`}>
             <Button variant="secondary" icon={GitCompare}>
@@ -214,13 +213,13 @@ export function ResultsPage() {
             </Button>
           </Link>
         )}
-        <Button variant="ghost" icon={Share2}>
+        {/* <Button variant="ghost" icon={Share2}>
           Compartir
         </Button>
         <Button variant="ghost" icon={Download}>
           Descargar
-        </Button>
-      </div> */}
+        </Button> */}
+      </div>
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
