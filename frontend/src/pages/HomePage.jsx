@@ -6,7 +6,6 @@ import { Train, Clock, ArrowRightLeft, Zap } from 'lucide-react'
 export function HomePage() {
   return (
     <div className="space-y-12">
-      {/* Hero Section */}
       <section className="text-center py-12">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-muted border border-primary/20 mb-6">
           <Zap className="w-4 h-4 text-primary" />
@@ -24,7 +23,6 @@ export function HomePage() {
           la opción óptima.
         </p>
 
-        {/* Lines Available */}
         <div className="flex flex-wrap items-center justify-center gap-2 mb-12">
           <span className="text-sm text-foreground-muted mr-2">Líneas disponibles:</span>
           <Badge line="L1">L1</Badge>
@@ -36,12 +34,10 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* Search Form */}
       <section>
         <SearchForm />
       </section>
 
-      {/* Features */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-12">
         <GlassCard hover className="text-center">
           <div className="p-3 rounded-lg bg-primary-muted w-fit mx-auto mb-4">

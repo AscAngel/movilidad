@@ -1,7 +1,3 @@
-"""
-Servicio de Lógica de Negocio para Rutas
-"""
-
 from typing import List, Optional
 from app.inference.engine import inference_engine
 from app.schemas.route_schema import (
@@ -13,24 +9,15 @@ import time
 
 
 class RouteService:
-    """Servicio para operaciones con rutas"""
-
     @staticmethod
     def search_routes(request: RouteSearchRequest) -> RouteSearchResponse:
-        """
-        Busca rutas óptimas entre origen y destino
-        """
         start_time = time.time()
-
-        # Buscar todas las rutas
         routes = inference_engine.find_all_paths(
             origin=request.origin,
             destination=request.destination,
             departure_time=request.departure_time,
             max_paths=5
         )
-
-        # Si no hay rutas, retornar vacío (no rankear listas vacías)
         if not routes:
             search_time = (time.time() - start_time) * 1000
             return RouteSearchResponse(
@@ -38,14 +25,9 @@ class RouteService:
                 total_routes=0,
                 search_time=search_time
             )
-
-        # Rankear según preferencia (solo si hay rutas)
         ranked_routes = inference_engine.rank_routes(routes, request.preference)
-
-        # Convertir a formato de respuesta
         route_responses = []
         for route_data in ranked_routes:
-            # Convertir pasos
             steps = [
                 {
                     "station": step["station"],
@@ -58,8 +40,6 @@ class RouteService:
                 }
                 for step in route_data["steps"]
             ]
-
-            # Crear ruta
             route = Route(
                 id=route_data["id"],
                 origin=route_data["origin"],
@@ -85,8 +65,7 @@ class RouteService:
                 }
             )
             route_responses.append(route)
-
-        search_time = (time.time() - start_time) * 1000  # en milisegundos
+        search_time = (time.time() - start_time) * 1000
 
         return RouteSearchResponse(
             routes=route_responses,
@@ -96,9 +75,6 @@ class RouteService:
 
     @staticmethod
     def compare_routes(route_ids: List[str], all_routes: List[Route]) -> CompareRoutesResponse:
-        """
-        Compara múltiples rutas
-        """
         comparison_routes = []
 
         for route in all_routes:
@@ -113,7 +89,6 @@ class RouteService:
                     )
                 )
 
-        # Generar recomendación
         if comparison_routes:
             best_route = min(comparison_routes, key=lambda r: r.time)
             recommendation = f"La ruta {best_route.route_id} es la más rápida con {best_route.time} minutos"
@@ -127,9 +102,6 @@ class RouteService:
 
     @staticmethod
     def get_all_stations() -> AllStationsResponse:
-        """
-        Obtiene todas las estaciones disponibles
-        """
         stations_data = inference_engine.get_all_stations()
 
         station_responses = [
@@ -148,9 +120,6 @@ class RouteService:
 
     @staticmethod
     def validate_stations(origin: str, destination: str) -> tuple[bool, Optional[str]]:
-        """
-        Valida que las estaciones existan
-        """
         all_stations = inference_engine.get_all_stations()
         station_ids = [s["id"] for s in all_stations]
 
@@ -166,5 +135,4 @@ class RouteService:
         return True, None
 
 
-# Instancia global del servicio
 route_service = RouteService()

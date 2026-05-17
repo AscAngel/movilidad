@@ -121,7 +121,6 @@ export function ComparePage() {
         sorted.sort((a, b) => a.metrics.cost - b.metrics.cost)
         break
       default:
-        // Keep original order (recommended first)
         break
     }
     return sorted
@@ -187,7 +186,6 @@ export function ComparePage() {
 
   return (
     <div className="space-y-8 animate-fade-in">
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <button 
@@ -222,7 +220,6 @@ export function ComparePage() {
         </div>
       </div>
 
-      {/* Selection Info */}
       <GlassCard padding="p-4">
         <div className="flex items-center justify-between flex-wrap gap-4">
           <p className="text-sm text-foreground-muted">
@@ -244,7 +241,6 @@ export function ComparePage() {
         </div>
       </GlassCard>
 
-      {/* Routes Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
         {sortedRoutes.map((route, index) => (
           <ComparisonCard
@@ -258,7 +254,6 @@ export function ComparePage() {
         ))}
       </div>
 
-      {/* Charts Section */}
       {selectedRouteData.length >= 2 && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <ComparisonBarChart 
@@ -270,7 +265,6 @@ export function ComparePage() {
         </div>
       )}
 
-      {/* Single Route Info */}
       {selectedRouteData.length === 1 && (
         <GlassCard className="text-center py-8">
           <p className="text-foreground-muted">

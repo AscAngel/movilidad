@@ -1,13 +1,9 @@
-"""
-Esquemas Pydantic para validación de datos
-"""
 from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
 from enum import Enum
 
 
 class PreferenceType(str, Enum):
-    """Tipos de preferencias del usuario"""
     BALANCED = "balanced"
     FASTEST = "fastest"
     LEAST_TRANSFERS = "least_transfers"
@@ -15,7 +11,6 @@ class PreferenceType(str, Enum):
 
 
 class RouteSearchRequest(BaseModel):
-    """Request para buscar rutas"""
     origin: str = Field(..., description="Código de estación de origen")
     destination: str = Field(..., description="Código de estación de destino")
     departure_time: Optional[str] = Field(None, description="Hora de salida (HH:MM)")
@@ -33,7 +28,6 @@ class RouteSearchRequest(BaseModel):
 
 
 class RouteStep(BaseModel):
-    """Un paso individual en la ruta"""
     station: str = Field(..., description="Nombre de la estación")
     station_id: str = Field(..., description="ID de la estación")
     line: str = Field(..., description="Línea de transporte")
@@ -44,7 +38,6 @@ class RouteStep(BaseModel):
 
 
 class RouteMetrics(BaseModel):
-    """Métricas de la ruta"""
     total_time: int = Field(..., description="Tiempo total en minutos")
     transfers: int = Field(..., description="Número de transbordos")
     cost: float = Field(..., description="Costo total del viaje")
@@ -54,7 +47,6 @@ class RouteMetrics(BaseModel):
 
 
 class ExpertExplanation(BaseModel):
-    """Explicación del sistema experto"""
     summary: str = Field(..., description="Resumen de la decisión")
     reasoning: List[str] = Field(..., description="Pasos de razonamiento")
     factors: List[str] = Field(..., description="Factores considerados")
@@ -63,7 +55,6 @@ class ExpertExplanation(BaseModel):
 
 
 class Route(BaseModel):
-    """Información completa de una ruta"""
     id: str = Field(..., description="ID único de la ruta")
     origin: str = Field(..., description="Estación de origen")
     destination: str = Field(..., description="Estación de destino")
@@ -76,19 +67,16 @@ class Route(BaseModel):
 
 
 class RouteSearchResponse(BaseModel):
-    """Response de búsqueda de rutas"""
     routes: List[Route] = Field(..., description="Rutas encontradas ordenadas por preferencia")
     total_routes: int = Field(..., description="Número total de rutas encontradas")
     search_time: float = Field(..., description="Tiempo de búsqueda en milisegundos")
 
 
 class CompareRoutesRequest(BaseModel):
-    """Request para comparar rutas"""
     route_ids: List[str] = Field(..., description="IDs de rutas a comparar")
 
 
 class ComparisonMetrics(BaseModel):
-    """Métricas para comparación"""
     route_id: str
     time: int
     transfers: int
@@ -97,19 +85,16 @@ class ComparisonMetrics(BaseModel):
 
 
 class CompareRoutesResponse(BaseModel):
-    """Response de comparación de rutas"""
     routes: List[ComparisonMetrics] = Field(..., description="Rutas comparadas")
     recommendation: str = Field(..., description="Recomendación basada en análisis")
 
 
 class StationResponse(BaseModel):
-    """Información de una estación"""
     id: str = Field(..., description="ID de la estación")
     name: str = Field(..., description="Nombre de la estación")
     lines: List[str] = Field(..., description="Líneas que pasan por la estación")
 
 
 class AllStationsResponse(BaseModel):
-    """Response con todas las estaciones"""
     stations: List[StationResponse] = Field(..., description="Lista de estaciones")
     total: int = Field(..., description="Número total de estaciones")

@@ -32,7 +32,6 @@ export function ResultsPage() {
       setError(null)
       
       try {
-        // Try to get cached results first
         let searchResults = null
         const cached = sessionStorage.getItem('routeSearchResults')
         
@@ -40,7 +39,6 @@ export function ResultsPage() {
           console.log('Usando resultados en caché')
           searchResults = JSON.parse(cached)
         } else {
-          // If no cache, try to fetch from API directly
           console.log('No hay caché, buscando desde API...')
           if (!origin || !destination) {
             throw new Error('Parámetros de búsqueda faltantes')
@@ -58,9 +56,8 @@ export function ResultsPage() {
         if (searchResults && searchResults.routes && searchResults.routes.length > 0) {
           console.log('Rutas encontradas:', searchResults.routes.length)
           setAllRoutes(searchResults.routes)
-          setRouteData(searchResults.routes[0]) // First route is the recommended one
+          setRouteData(searchResults.routes[0])
         } else if (searchResults && searchResults.routes) {
-          // Empty routes array is a valid response, not an error
           console.log('Sin rutas disponibles para esta búsqueda')
           setError('No se encontraron rutas disponibles entre las estaciones seleccionadas')
           setAllRoutes([])
@@ -143,7 +140,6 @@ export function ResultsPage() {
     )
   }
 
-  // Transform API response to match component expectations
   const transformedSteps = routeData.steps.map(step => ({
     station: step.station,
     line: step.line,
@@ -164,7 +160,6 @@ export function ResultsPage() {
 
   return (
     <div className="space-y-8 animate-fade-in">
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <button 
@@ -204,7 +199,6 @@ export function ResultsPage() {
         </div>
       </div>
 
-      {/* Actions */}
       <div className="flex flex-wrap gap-3">
         {allRoutes.length > 1 && (
           <Link to={`/comparar?origin=${origin}&destination=${destination}&time=${time}&preference=${preference}`}>
@@ -213,28 +207,17 @@ export function ResultsPage() {
             </Button>
           </Link>
         )}
-        {/* <Button variant="ghost" icon={Share2}>
-          Compartir
-        </Button>
-        <Button variant="ghost" icon={Download}>
-          Descargar
-        </Button> */}
       </div>
 
-      {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column - Timeline */}
         <div className="lg:col-span-2 space-y-6">
           <RouteTimeline steps={transformedSteps} />
         </div>
-        
-        {/* Right Column - Metrics */}
         <div className="space-y-6">
           <RouteMetrics metrics={transformedMetrics} />
         </div>
       </div>
 
-      {/* Expert Explanation - Full Width */}
       <ExpertExplanation explanation={routeData.explanation} />
     </div>
   )

@@ -1,8 +1,3 @@
-"""
-Aplicación Principal FastAPI
-Sistema Experto para Optimización de Rutas del Transporte Público
-"""
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -10,11 +5,9 @@ import logging
 
 from app.api.routes.routes import router as routes_router
 
-# Configurar logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Crear aplicación FastAPI
 app = FastAPI(
     title="Sistema Experto de Optimización de Rutas",
     description="Sistema experto basado en reglas para optimizar rutas del transporte público en la Zona Metropolitana de Guadalajara",
@@ -23,7 +16,6 @@ app = FastAPI(
     openapi_url="/api/openapi.json"
 )
 
-# Configurar CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -38,15 +30,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-# Registrar routers
 app.include_router(routes_router)
 
-
-# Rutas globales
 @app.get("/", tags=["root"])
 async def root():
-    """Endpoint raíz"""
     return {
         "message": "Sistema Experto de Optimización de Rutas",
         "version": "1.0.0",
@@ -56,7 +43,6 @@ async def root():
 
 @app.get("/api/health", tags=["health"])
 async def health_check():
-    """Verificar estado del servicio"""
     return {
         "status": "ok",
         "service": "Route Optimization Expert System",
@@ -66,7 +52,6 @@ async def health_check():
 
 @app.get("/api/info", tags=["info"])
 async def get_info():
-    """Obtener información del sistema"""
     return {
         "name": "Sistema Experto de Optimización de Rutas",
         "description": "Sistema basado en reglas para recomendación de rutas óptimas",
@@ -84,7 +69,6 @@ async def get_info():
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request, exc):
-    """Manejador global de excepciones"""
     logger.error(f"Error no controlado: {exc}")
     return JSONResponse(
         status_code=500,
